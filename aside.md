@@ -7,7 +7,6 @@ Contact {#contact}
 - <i class="fa fa-link"></i> ShixiangWang.github.io
 - <i class="fa fa-weixin"></i> elegant-r
 
-
 Selected tools {#skills}
 --------------------------------------------------------------------------------
 
