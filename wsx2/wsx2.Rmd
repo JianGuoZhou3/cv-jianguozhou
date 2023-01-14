@@ -36,7 +36,8 @@ publications <- read_excel("cv_wsx.xlsx", sheet = "publications")
 
 :::::: {.contact-info}
 wangsx1@sysucc.org.cn  \
-<u><a href="https://github.com/ShixiangWang">github.com/ShixiangWang</a></u>
+<u><a href="https://github.com/ShixiangWang">github.com/ShixiangWang</a></u> \
+<u><a href="https://orcid.org/0000-0001-9855-7357">ORCID</a></u>
 ::::::
 
 :::
@@ -48,12 +49,12 @@ wangsx1@sysucc.org.cn  \
 ::::::
 
 :::::: {.interests}
-**Aims---**to develop and evaluate design patterns that help people self-regulate their use of smartphones and laptops.
-<br>
-**Methods---**controlled studies, user surveys, interviews, co-design workshops, web scraping, behaviour logging.
+I am a computational biologist working on cancer genomics. I use bioinformatics skills to decode the unfound patterns
+in cancer, and explore biomarkers for explaining the cancer heterogeneity and predicting the efficacy of cancer treatments, mainly in immunotherapy.
 
-**I am passionate about** open and transparent research. 
-Since 2018, I have shared materials, analysis scripts, and data for all my first-authored work, and written my papers as reproducible documents in [R Markdown](https://rmarkdown.rstudio.com).
+**I am passionate about** open science and developing open-source analysis toolkits. Because of this,
+currently I am a community member of [Openbiox](https://github.com/openbiox), [rOpenSci](https://ropensci.org/) and [Bioconductor](https://www.bioconductor.org/). My long-term goal in academic field is being a master in a
+subfield of cancer bioinformatics and trying my best to continually boost the open-source bioinformatics ecosystem in China.
 ::::::
 :::
 
@@ -104,9 +105,7 @@ cv_entries |>
 
 ## Publications {.three-split}
 
-:::::: {.grid-container-publications}
-<h3>Journal articles <span class="review-note">(fully reviewed)</span></h3>
-::::::
+<h3>Journal articles <span class="review-note">(fully reviewed, † for co-first)</span></h3>
 
 ```{r}
 publications_formatted <- publications |> 
@@ -118,6 +117,7 @@ publications_formatted <- publications |>
 ```{r}
 publications_formatted |>
   filter(type == "journal article") |> 
+  mutate(venue = if_else(mark == "y", glue("{venue} <b>(representative work)</b>"), venue, venue)) |> 
   mutate(citation = glue("<span class='cv-entry-title'>{title}</span><br>",
                          "<span class='publication-authors'>{authors}</span><br>",
                          "<span class='publication-venue'>{venue}</span>")) |> 
@@ -130,9 +130,7 @@ publications_formatted |>
 
 
 
-:::::: {.grid-container-publications}
-<h3>Preprints<span class="review-note"> (not reviewed)</span></h3>
-::::::
+<h3>Preprints<span class="review-note"> (not reviewed, † for co-first, \# for corresponding)</span></h3>
 
 ```{r}
 publications_formatted |>
@@ -153,6 +151,47 @@ publications_formatted |>
   select(year, number, citation) |>
   knitr::kable()
 ```
+
+
+## Cited by
+
+```{r}
+# Code written by Guangchuang Yu, modified by Shixiang
+library(ggplot2)
+library(tinyscholar)
+library(ggstance)
+library(ggtree)
+library(ggimage)
+
+id <- 'FvNp0NkAAAAJ'
+
+citation <- tinyscholar::tinyscholar(id)$citation
+total_citation <- citation[[2]][1]
+citation <- citation[-1, ] # remove 'total' row
+names(citation) <- c("year", "cites")
+citation$year <- as.numeric(citation$year)
+
+citation$year <- factor(citation$year)
+
+p <- ggplot(citation, aes(cites, year)) +
+  geom_barh(stat = "identity", fill = "#96B56C") +
+  geom_text2(aes(label = cites, subset = cites > max(cites) / 5), hjust = 1.1, size = 5) +
+  labs(caption = "data from Google Scholar (https://scholar.google.com/citations?user=FvNp0NkAAAAJ)") +
+  scale_x_continuous(position = "top") +
+  theme_minimal(base_size = 14) +
+  xlab(NULL) +
+  ylab(NULL) +
+  theme(
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_line(linetype = "dashed"),
+    plot.caption = element_text(colour = "grey30")
+  ) +
+  theme_transparent()
+
+p
+```
+
 
 ## Talks {.three-split}
 
